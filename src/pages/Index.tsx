@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import QRCode from "qrcode.react";
+import { QRCodeSVG } from "qrcode.react";
 import { ArrowRight, CheckCircle, Users, Lightbulb } from "lucide-react";
 
 const Index = () => {
@@ -91,7 +91,7 @@ const Index = () => {
                 <p className="text-gray-600">Scan the QR code to start your application instantly</p>
                 <div className="flex justify-center">
                   <div className="p-4 bg-white rounded-lg shadow-md">
-                    <QRCode 
+                    <QRCodeSVG 
                       value={qrCodeValue} 
                       size={200}
                       fgColor="#1e40af"

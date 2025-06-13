@@ -8,6 +8,8 @@ interface User {
   email: string;
   contact?: string;
   role?: string;
+  incubationCentre?: string;
+  status?: 'pending' | 'approved' | 'rejected';
 }
 
 interface AuthState {
@@ -68,6 +70,8 @@ export const useAuth = () => {
     email: string;
     password: string;
     contact: string;
+    incubationCentre: string;
+    incubationEmail: string;
   }) => {
     try {
       const response = await apiRequest(API_ENDPOINTS.REGISTER, {

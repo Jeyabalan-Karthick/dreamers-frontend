@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
-import { Lightbulb, ArrowLeft } from "lucide-react";
+import { Lightbulb, Home } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -16,37 +17,30 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      // Simple validation - in real app this would check against backend
-      if (formData.email && formData.password) {
-        localStorage.setItem("user", JSON.stringify({
-          name: "John Doe",
-          email: formData.email,
-          contact: "+91 9999999999"
-        }));
-        localStorage.setItem("token", "fake-jwt-token");
-        
-        toast({
-          title: "Success",
-          description: "Logged in successfully!"
-        });
-        
-        navigate("/apply");
-      } else {
-        toast({
-          title: "Error",
-          description: "Invalid email or password",
-          variant: "destructive"
-        });
-      }
+    try {
+      await login(formData.email, formData.password);
+      
+      toast({
+        title: "Success",
+        description: "Logged in successfully!"
+      });
+      
+      navigate("/apply");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Invalid email or password",
+        variant: "destructive"
+      });
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,9 +54,9 @@ const LoginPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <Link to="/" className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
+          <Link to="/home" className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4">
+            <Home className="w-4 h-4 mr-2" />
+            Home
           </Link>
           <div className="flex items-center justify-center space-x-2 mb-4">
             <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center">

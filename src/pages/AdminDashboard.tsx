@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,8 +5,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Link, useNavigate } from "react-router-dom";
-import { Lightbulb, LogOut, Eye, Users, FileText, CheckCircle, Clock, XCircle } from "lucide-react";
+import { Lightbulb, LogOut, Eye, Users, FileText, CheckCircle, Clock, XCircle, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest, API_ENDPOINTS } from "@/config/api";
 
 interface Application {
   id: string;
@@ -18,11 +18,14 @@ interface Application {
   companyType: string;
   teamSize: string;
   incubationCentre: string;
+  incubationEmail: string;
   status: 'pending' | 'approved' | 'rejected';
   submittedAt: string;
   ideaDescription: string;
   expectations: string[];
   challenges?: string;
+  approvalDate?: string;
+  rejectionReason?: string;
 }
 
 const AdminDashboard = () => {
@@ -39,8 +42,20 @@ const AdminDashboard = () => {
       return;
     }
 
-    // Simulate fetching applications data
-    setTimeout(() => {
+    fetchApplications();
+  }, [navigate]);
+
+  const fetchApplications = async () => {
+    try {
+      const response = await apiRequest(API_ENDPOINTS.ADMIN_APPLICATIONS);
+      setApplications(response.applications || []);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch applications",
+        variant: "destructive"
+      });
+      // Fallback to mock data for demo
       const mockApplications: Application[] = [
         {
           id: "APP001",
@@ -51,6 +66,7 @@ const AdminDashboard = () => {
           companyType: "Technology",
           teamSize: "2-5",
           incubationCentre: "IIT Delhi Incubation Centre",
+          incubationEmail: "head@iitdelhi-incubation.com",
           status: "pending",
           submittedAt: "2024-01-15",
           ideaDescription: "AI-powered customer service automation platform that helps businesses...",
@@ -66,32 +82,20 @@ const AdminDashboard = () => {
           companyType: "Sustainability",
           teamSize: "6-10",
           incubationCentre: "IIT Bombay Incubation Centre",
+          incubationEmail: "head@iitbombay-incubation.com",
           status: "approved",
           submittedAt: "2024-01-10",
           ideaDescription: "Sustainable packaging solutions for e-commerce companies...",
           expectations: ["Technical Resources", "Market Research", "Funding Support"],
-          challenges: "Scaling production and meeting regulatory requirements"
-        },
-        {
-          id: "APP003",
-          founderName: "Raj Patel",
-          startupName: "HealthTech Pro",
-          email: "raj@healthtech.com",
-          phone: "+91 9876543212",
-          companyType: "Healthcare",
-          teamSize: "1-5",
-          incubationCentre: "T-Hub Hyderabad",
-          status: "rejected",
-          submittedAt: "2024-01-08",
-          ideaDescription: "Telemedicine platform for remote healthcare delivery...",
-          expectations: ["Legal Support", "Funding Support", "Network Access"],
-          challenges: "Regulatory compliance and user acquisition"
+          challenges: "Scaling production and meeting regulatory requirements",
+          approvalDate: "2024-01-12"
         }
       ];
       setApplications(mockApplications);
+    } finally {
       setLoading(false);
-    }, 1000);
-  }, [navigate]);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
@@ -162,7 +166,7 @@ const AdminDashboard = () => {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <Link to="/" className="text-gray-600 hover:text-gray-800">
+              <Link to="/home" className="text-gray-600 hover:text-gray-800">
                 Public Site
               </Link>
               <Button onClick={handleLogout} variant="outline" size="sm">
@@ -194,7 +198,7 @@ const AdminDashboard = () => {
               <div className="flex items-center">
                 <Clock className="w-8 h-8 text-yellow-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Pending</p>
+                  <p className="text-sm font-medium text-gray-600">Pending Approval</p>
                   <p className="text-2xl font-bold text-gray-900">{stats.pending}</p>
                 </div>
               </div>
@@ -253,7 +257,14 @@ const AdminDashboard = () => {
                     <TableCell className="font-medium">{application.id}</TableCell>
                     <TableCell>{application.founderName}</TableCell>
                     <TableCell>{application.startupName}</TableCell>
-                    <TableCell>{application.incubationCentre}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <span>{application.incubationCentre}</span>
+                        {application.incubationEmail && (
+                          <Mail className="w-4 h-4 text-gray-400" title={application.incubationEmail} />
+                        )}
+                      </div>
+                    </TableCell>
                     <TableCell>
                       <Badge className={getStatusColor(application.status)}>
                         <div className="flex items-center space-x-1">
@@ -297,6 +308,12 @@ const AdminDashboard = () => {
                               </div>
                               
                               <div>
+                                <h4 className="font-semibold text-gray-700">Incubation Centre</h4>
+                                <p><strong>Centre:</strong> {selectedApplication.incubationCentre}</p>
+                                <p><strong>Contact:</strong> {selectedApplication.incubationEmail}</p>
+                              </div>
+                              
+                              <div>
                                 <h4 className="font-semibold text-gray-700">Business Idea</h4>
                                 <p className="text-gray-600 mt-1">{selectedApplication.ideaDescription}</p>
                               </div>
@@ -325,6 +342,12 @@ const AdminDashboard = () => {
                                     </Badge>
                                   </p>
                                   <p><strong>Submitted:</strong> {new Date(selectedApplication.submittedAt).toLocaleDateString()}</p>
+                                  {selectedApplication.approvalDate && (
+                                    <p><strong>Approved:</strong> {new Date(selectedApplication.approvalDate).toLocaleDateString()}</p>
+                                  )}
+                                  {selectedApplication.rejectionReason && (
+                                    <p><strong>Rejection Reason:</strong> {selectedApplication.rejectionReason}</p>
+                                  )}
                                 </div>
                               </div>
                             </div>

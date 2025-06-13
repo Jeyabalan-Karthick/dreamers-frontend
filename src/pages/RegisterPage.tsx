@@ -3,10 +3,20 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
 import { Lightbulb, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+
+const INCUBATION_CENTERS = [
+  { id: "iit-delhi", name: "IIT Delhi Incubation Centre", email: "head@iitdelhi-incubation.com" },
+  { id: "iit-bombay", name: "IIT Bombay Incubation Centre", email: "head@iitbombay-incubation.com" },
+  { id: "t-hub", name: "T-Hub Hyderabad", email: "head@thub-hyderabad.com" },
+  { id: "iisc-bangalore", name: "IISc Bangalore Incubation", email: "head@iisc-incubation.com" },
+  { id: "nasscom", name: "NASSCOM Incubation Centre", email: "head@nasscom-incubation.com" }
+];
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -14,11 +24,13 @@ const RegisterPage = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    contact: ""
+    contact: "",
+    incubationCentre: ""
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { register } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,23 +57,43 @@ const RegisterPage = () => {
       return;
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      localStorage.setItem("user", JSON.stringify({
+    if (!formData.incubationCentre) {
+      toast({
+        title: "Error",
+        description: "Please select an incubation centre",
+        variant: "destructive"
+      });
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const selectedCenter = INCUBATION_CENTERS.find(center => center.id === formData.incubationCentre);
+      
+      await register({
         name: formData.name,
         email: formData.email,
-        contact: formData.contact
-      }));
-      localStorage.setItem("token", "fake-jwt-token");
+        password: formData.password,
+        contact: formData.contact,
+        incubationCentre: selectedCenter?.name || formData.incubationCentre,
+        incubationEmail: selectedCenter?.email || ""
+      });
       
       toast({
         title: "Success",
-        description: "Account created successfully!"
+        description: "Registration successful! Your application has been sent to the incubation centre for approval."
       });
       
       navigate("/apply");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Registration failed. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,13 +103,20 @@ const RegisterPage = () => {
     });
   };
 
+  const handleSelectChange = (value: string) => {
+    setFormData({
+      ...formData,
+      incubationCentre: value
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <Link to="/" className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4">
+          <Link to="/login" className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
+            Back to Login
           </Link>
           <div className="flex items-center justify-center space-x-2 mb-4">
             <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
@@ -137,6 +176,22 @@ const RegisterPage = () => {
                   className="mt-1"
                   placeholder="Enter your contact number"
                 />
+              </div>
+
+              <div>
+                <Label htmlFor="incubationCentre">Select Incubation Centre</Label>
+                <Select onValueChange={handleSelectChange} required>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Choose an incubation centre" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {INCUBATION_CENTERS.map((center) => (
+                      <SelectItem key={center.id} value={center.id}>
+                        {center.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>

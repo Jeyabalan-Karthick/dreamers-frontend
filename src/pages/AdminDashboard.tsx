@@ -261,7 +261,7 @@ const AdminDashboard = () => {
                       <div className="flex items-center space-x-2">
                         <span>{application.incubationCentre}</span>
                         {application.incubationEmail && (
-                          <Mail className="w-4 h-4 text-gray-400" title={application.incubationEmail} />
+                          <Mail className="w-4 h-4 text-gray-400" />
                         )}
                       </div>
                     </TableCell>

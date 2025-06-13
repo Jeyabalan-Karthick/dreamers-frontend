@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { apiRequest, API_ENDPOINTS } from '@/config/api';
+import { getStorageItem, setStorageItem, removeStorageItem } from '@/utils/localStorage';
 
 interface User {
   id: number;
@@ -21,23 +21,16 @@ interface AuthState {
 export const useAuth = () => {
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
-    token: localStorage.getItem('token'),
+    token: getStorageItem('token'),
     loading: true,
   });
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
+    const token = getStorageItem('token');
+    const userData = getStorageItem('user');
     
     if (token && userData) {
-      try {
-        const user = JSON.parse(userData);
-        setAuthState({ user, token, loading: false });
-      } catch (error) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setAuthState({ user: null, token: null, loading: false });
-      }
+      setAuthState({ user: userData, token, loading: false });
     } else {
       setAuthState({ user: null, token: null, loading: false });
     }
@@ -45,21 +38,28 @@ export const useAuth = () => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await apiRequest(API_ENDPOINTS.LOGIN, {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-      });
-
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user));
+      // Simulate login for frontend-only version
+      const mockUser = {
+        id: 1,
+        name: "Test User",
+        email: email,
+        contact: "1234567890",
+        role: "user",
+        status: 'approved' as const
+      };
+      
+      const mockToken = "mock-jwt-token";
+      
+      setStorageItem('token', mockToken);
+      setStorageItem('user', mockUser);
       
       setAuthState({
-        user: response.user,
-        token: response.token,
+        user: mockUser,
+        token: mockToken,
         loading: false,
       });
 
-      return response;
+      return { user: mockUser, token: mockToken };
     } catch (error) {
       throw error;
     }
@@ -74,29 +74,37 @@ export const useAuth = () => {
     incubationEmail: string;
   }) => {
     try {
-      const response = await apiRequest(API_ENDPOINTS.REGISTER, {
-        method: 'POST',
-        body: JSON.stringify(userData),
-      });
-
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user));
+      // Simulate registration for frontend-only version
+      const mockUser = {
+        id: 1,
+        name: userData.name,
+        email: userData.email,
+        contact: userData.contact,
+        role: "user",
+        incubationCentre: userData.incubationCentre,
+        status: 'pending' as const
+      };
+      
+      const mockToken = "mock-jwt-token";
+      
+      setStorageItem('token', mockToken);
+      setStorageItem('user', mockUser);
       
       setAuthState({
-        user: response.user,
-        token: response.token,
+        user: mockUser,
+        token: mockToken,
         loading: false,
       });
 
-      return response;
+      return { user: mockUser, token: mockToken };
     } catch (error) {
       throw error;
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    removeStorageItem('token');
+    removeStorageItem('user');
     setAuthState({ user: null, token: null, loading: false });
   };
 

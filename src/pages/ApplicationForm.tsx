@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,12 +8,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Link, useNavigate } from "react-router-dom";
-import { Lightbulb, ArrowLeft, ArrowRight, Upload } from "lucide-react";
+import { Lightbulb, ArrowLeft, ArrowRight, Upload, HelpCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import SupportForm from "@/components/SupportForm";
 
 const ApplicationForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [user, setUser] = useState<any>(null);
+  const [showSupportForm, setShowSupportForm] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -26,6 +27,7 @@ const ApplicationForm = () => {
     phone: "",
     companyType: "",
     teamSize: "",
+    couponCode: "",
     
     // Step 2
     incubationCentre: "",
@@ -207,6 +209,17 @@ const ApplicationForm = () => {
           </Select>
         </div>
       </div>
+
+      <div>
+        <Label htmlFor="couponCode">Coupon Code (Optional)</Label>
+        <Input
+          id="couponCode"
+          value={formData.couponCode}
+          onChange={(e) => handleInputChange("couponCode", e.target.value)}
+          placeholder="Enter coupon code if you have one"
+          className="mt-1"
+        />
+      </div>
     </div>
   );
 
@@ -354,13 +367,23 @@ const ApplicationForm = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Link>
-          <div className="flex items-center space-x-2 mb-4">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
-              <Lightbulb className="w-5 h-5 text-white" />
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
+                <Lightbulb className="w-5 h-5 text-white" />
+              </div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+                Dreamers Application
+              </h1>
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-              Dreamers Application
-            </h1>
+            <Button
+              variant="outline"
+              onClick={() => setShowSupportForm(true)}
+              className="flex items-center space-x-2"
+            >
+              <HelpCircle className="w-4 h-4" />
+              <span>Support</span>
+            </Button>
           </div>
           <p className="text-gray-600">Complete your startup application in 3 simple steps</p>
         </div>
@@ -414,6 +437,10 @@ const ApplicationForm = () => {
             </div>
           </CardContent>
         </Card>
+
+        {showSupportForm && (
+          <SupportForm onClose={() => setShowSupportForm(false)} />
+        )}
       </div>
     </div>
   );

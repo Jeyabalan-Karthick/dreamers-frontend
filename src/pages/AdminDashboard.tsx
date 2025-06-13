@@ -7,7 +7,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Link, useNavigate } from "react-router-dom";
 import { Lightbulb, LogOut, Eye, Users, FileText, CheckCircle, Clock, XCircle, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest, API_ENDPOINTS } from "@/config/api";
 
 interface Application {
   id: string;
@@ -26,6 +25,7 @@ interface Application {
   challenges?: string;
   approvalDate?: string;
   rejectionReason?: string;
+  couponCode?: string;
 }
 
 const AdminDashboard = () => {
@@ -47,15 +47,7 @@ const AdminDashboard = () => {
 
   const fetchApplications = async () => {
     try {
-      const response = await apiRequest(API_ENDPOINTS.ADMIN_APPLICATIONS);
-      setApplications(response.applications || []);
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch applications",
-        variant: "destructive"
-      });
-      // Fallback to mock data for demo
+      // Using mock data for frontend-only version
       const mockApplications: Application[] = [
         {
           id: "APP001",
@@ -71,7 +63,8 @@ const AdminDashboard = () => {
           submittedAt: "2024-01-15",
           ideaDescription: "AI-powered customer service automation platform that helps businesses...",
           expectations: ["Funding Support", "Mentorship and Guidance", "Network Access"],
-          challenges: "Finding the right technical talent and initial funding"
+          challenges: "Finding the right technical talent and initial funding",
+          couponCode: "TECH2024"
         },
         {
           id: "APP002",
@@ -92,6 +85,12 @@ const AdminDashboard = () => {
         }
       ];
       setApplications(mockApplications);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch applications",
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
     }
@@ -304,6 +303,9 @@ const AdminDashboard = () => {
                                   <p><strong>Startup Name:</strong> {selectedApplication.startupName}</p>
                                   <p><strong>Company Type:</strong> {selectedApplication.companyType}</p>
                                   <p><strong>Team Size:</strong> {selectedApplication.teamSize}</p>
+                                  {selectedApplication.couponCode && (
+                                    <p><strong>Coupon Code:</strong> {selectedApplication.couponCode}</p>
+                                  )}
                                 </div>
                               </div>
                               

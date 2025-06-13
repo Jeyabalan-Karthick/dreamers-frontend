@@ -1,160 +1,142 @@
 
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
-import { ArrowRight, CheckCircle, Users, Lightbulb } from "lucide-react";
+import { ArrowRight, CheckCircle, Users, Lightbulb, Shield } from "lucide-react";
 
 const Index = () => {
-  const qrCodeValue = `${window.location.origin}/apply?ref=event01`;
+  const qrCodeValue = `${window.location.origin}/apply`;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
                 <Lightbulb className="w-5 h-5 text-white" />
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
                 Dreamers
               </h1>
             </div>
-            <div className="flex space-x-4">
-              <Link to="/login">
-                <Button variant="ghost" className="text-gray-600 hover:text-blue-600">
-                  Login
-                </Button>
+            <nav className="flex items-center space-x-6">
+              <Link to="/login" className="text-gray-600 hover:text-gray-900 transition-colors">
+                Sign In
               </Link>
-              <Link to="/register">
+              <Link to="/register" className="text-gray-600 hover:text-gray-900 transition-colors">
+                Sign Up
+              </Link>
+              <Link to="/admin/login" className="text-gray-600 hover:text-gray-900 transition-colors flex items-center">
+                <Shield className="w-4 h-4 mr-1" />
+                Admin
+              </Link>
+              <Link to="/apply">
                 <Button className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700">
-                  Register
+                  Apply Now
                 </Button>
               </Link>
-            </div>
+            </nav>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-6 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
-            <div className="space-y-6">
-              <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
-                Turn Your
-                <span className="bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent block">
-                  Startup Dreams
-                </span>
-                Into Reality
-              </h1>
-              <p className="text-xl text-gray-600 leading-relaxed">
-                Join our innovative startup incubation program and get the support, mentorship, 
-                and resources you need to build the next big thing.
-              </p>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/apply">
-                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-lg px-8 py-4 group">
-                  Apply Now
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <Button size="lg" variant="outline" className="text-lg px-8 py-4 border-2 hover:bg-gray-50">
+      <section className="py-20">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+            Turn Your 
+            <span className="bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+              {" "}Dreams{" "}
+            </span>
+            Into Reality
+          </h2>
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+            Join the most innovative startup inc  ubation program. Get mentorship, funding, 
+            and resources to build the next big thing. Your entrepreneurial journey starts here.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/apply">
+              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-lg px-8 py-4">
+                Start Your Application
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </Link>
+            <Link to="/register">
+              <Button size="lg" variant="outline" className="text-lg px-8 py-4">
                 Learn More
               </Button>
-            </div>
-
-            <div className="flex items-center space-x-8 pt-8">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">500+</div>
-                <div className="text-sm text-gray-600">Startups Launched</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">₹50Cr+</div>
-                <div className="text-sm text-gray-600">Funding Raised</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">95%</div>
-                <div className="text-sm text-gray-600">Success Rate</div>
-              </div>
-            </div>
+            </Link>
           </div>
+        </div>
+      </section>
 
-          <div className="flex justify-center">
-            <Card className="p-8 bg-white/70 backdrop-blur-sm border-0 shadow-2xl">
-              <CardContent className="text-center space-y-6">
-                <h3 className="text-2xl font-semibold text-gray-800">Quick Apply</h3>
-                <p className="text-gray-600">Scan the QR code to start your application instantly</p>
-                <div className="flex justify-center">
-                  <div className="p-4 bg-white rounded-lg shadow-md">
-                    <QRCodeSVG 
-                      value={qrCodeValue} 
-                      size={200}
-                      fgColor="#1e40af"
-                      bgColor="#ffffff"
-                      level="M"
-                    />
-                  </div>
+      {/* Features */}
+      <section className="py-20 bg-white/50">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h3 className="text-3xl font-bold text-gray-900 mb-4">Why Choose Dreamers?</h3>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              We provide everything you need to transform your startup idea into a successful business
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="text-center p-8 hover:shadow-lg transition-shadow bg-white/80 backdrop-blur-sm border-0">
+              <CardContent>
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Users className="w-8 h-8 text-blue-600" />
                 </div>
-                <p className="text-sm text-gray-500">
-                  Or visit: dreamers.com/apply
-                </p>
+                <h4 className="text-xl font-semibold mb-4">Expert Mentorship</h4>
+                <p className="text-gray-600">Get guidance from industry veterans and successful entrepreneurs who've been there before.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center p-8 hover:shadow-lg transition-shadow bg-white/80 backdrop-blur-sm border-0">
+              <CardContent>
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle className="w-8 h-8 text-green-600" />
+                </div>
+                <h4 className="text-xl font-semibold mb-4">Funding Support</h4>
+                <p className="text-gray-600">Access to investor networks and funding opportunities to fuel your startup's growth.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center p-8 hover:shadow-lg transition-shadow bg-white/80 backdrop-blur-sm border-0">
+              <CardContent>
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Lightbulb className="w-8 h-8 text-purple-600" />
+                </div>
+                <h4 className="text-xl font-semibold mb-4">Innovation Hub</h4>
+                <p className="text-gray-600">State-of-the-art facilities and resources to help you build and test your products.</p>
               </CardContent>
             </Card>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="bg-white/50 py-20">
+      {/* QR Code Section */}
+      <section className="py-20">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Why Choose Dreamers?</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We provide everything you need to transform your innovative ideas into successful businesses
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-12 text-center max-w-2xl mx-auto">
+            <h3 className="text-3xl font-bold text-gray-900 mb-4">Quick Apply</h3>
+            <p className="text-gray-600 mb-8">Scan the QR code to start your application instantly</p>
+            <div className="flex justify-center">
+              <div className="p-4 bg-white rounded-lg shadow-md">
+                <QRCodeSVG 
+                  value={qrCodeValue} 
+                  size={200}
+                  fgColor="#1e40af"
+                  bgColor="#ffffff"
+                />
+              </div>
+            </div>
+            <p className="text-sm text-gray-500 mt-4">
+              Or visit: {window.location.origin}/apply
             </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="p-8 bg-white border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="text-center space-y-4">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-                  <Users className="w-8 h-8 text-blue-600" />
-                </div>
-                <h3 className="text-xl font-semibold">Expert Mentorship</h3>
-                <p className="text-gray-600">
-                  Get guidance from industry experts and successful entrepreneurs who have been there before.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="p-8 bg-white border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="text-center space-y-4">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                  <CheckCircle className="w-8 h-8 text-green-600" />
-                </div>
-                <h3 className="text-xl font-semibold">Funding Support</h3>
-                <p className="text-gray-600">
-                  Access to seed funding, investor networks, and financial planning assistance.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="p-8 bg-white border-0 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="text-center space-y-4">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
-                  <Lightbulb className="w-8 h-8 text-purple-600" />
-                </div>
-                <h3 className="text-xl font-semibold">Innovation Hub</h3>
-                <p className="text-gray-600">
-                  State-of-the-art facilities, co-working spaces, and cutting-edge technology resources.
-                </p>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </section>
@@ -167,14 +149,25 @@ const Index = () => {
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
                 <Lightbulb className="w-5 h-5 text-white" />
               </div>
-              <h3 className="text-xl font-bold">Dreamers</h3>
+              <h2 className="text-2xl font-bold">Dreamers</h2>
             </div>
-            <p className="text-gray-400 mb-6">
-              Empowering the next generation of entrepreneurs
-            </p>
-            <p className="text-sm text-gray-500">
-              © 2024 Dreamers Startup Incubation. All rights reserved.
-            </p>
+            <p className="text-gray-400 mb-6">Empowering the next generation of entrepreneurs</p>
+            <div className="flex justify-center space-x-6">
+              <Link to="/apply" className="text-gray-400 hover:text-white transition-colors">
+                Apply
+              </Link>
+              <Link to="/login" className="text-gray-400 hover:text-white transition-colors">
+                Sign In
+              </Link>
+              <Link to="/admin/login" className="text-gray-400 hover:text-white transition-colors">
+                Admin Portal
+              </Link>
+            </div>
+            <div className="mt-8 pt-8 border-t border-gray-800">
+              <p className="text-gray-400 text-sm">
+                © 2024 Dreamers Incubation Platform. All rights reserved.
+              </p>
+            </div>
           </div>
         </div>
       </footer>
